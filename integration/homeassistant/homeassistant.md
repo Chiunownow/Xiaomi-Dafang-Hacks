@@ -94,6 +94,54 @@ Dafang3:
     - cover.dafang3_move_updown
 ```
 
+To use slider to control motor you can use the follwing template:
+
+```yaml
+input_number:
+    dafang_motor_x:
+        max: 100
+        min: 0
+        initial: 50
+        step: 1
+        name: Vercitl
+    dafang_motor_y: 
+        max: 100
+        min: 0
+        initial: 50
+        step: 1
+        name: Horizontal
+         
+automation: 
+    - alias: move_dafang_motor_x
+      trigger: 
+        platform: state
+        entity_id: input_number.dafang_motor_x
+      action: 
+      - service: cover.set_cover_position
+        data_template: 
+          entity_id: cover.dafang_move_left_right
+          position: "{{ states('input_number.dafang_motor_x') | int }}"
+
+    - alias: move_dafang_motor_y
+      trigger: 
+        platform: state
+        entity_id: input_number.dafang_motor_y
+      action: 
+      - service: cover.set_cover_position
+        data_template: 
+            entity_id: cover.dafang_move_up_down
+            position: "{{ states('input_number.dafang_motor_y') | int }}"
+             
+group:
+    # If you have another group in same yaml file plz merge them
+    dafang_motor_slider: 
+        name: 云台控制
+        entities: 
+          - input_number.dafang_motor_x
+          - input_number.dafang_motor_y
+```
+
+
 ### To set up mqtt motion detection alerts:
 
 copy /system/sdcard/config/motion.conf.dist to /system/sdcard/config/motion.conf:
